@@ -37,3 +37,5 @@ pnpm build
 ```sh
 pnpm lint
 ```
+
+**组件和函数导入说明**：自行编写组件的 `.d.ts` 文件，全局导入样式，组件库和 `components` 文件夹下的组件可直接使用，无需 import，但 `ref`、`watch` 以及组件库中的部分方法（如 `Toast`）需手动 import。

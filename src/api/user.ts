@@ -1,0 +1,13 @@
+import type { CodeType, User } from '@/types/user'
+import { request } from '@/utils/request'
+
+// 密码登录
+export const loginByPassword = (mobile: string, password: string) =>
+  request<User>('/login/password', 'POST', { mobile, password })
+//验证码登录
+export const loginByCode = (mobile: string, code: string) =>
+  request<User>('/login', 'POST', { mobile, code })
+
+// 发送验证码
+export const sendMobileCode = (mobile: string, type: CodeType) =>
+  request<{ code: string }>('/code', 'GET', { mobile, type })
