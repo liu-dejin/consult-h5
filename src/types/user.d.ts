@@ -15,7 +15,6 @@ export interface User {
 // 短信验证码类型
 export type CodeType = 'login' | 'register'
 
-
 // 2. 登录人信息（个人中心）
 type OmitUser = Omit<User, 'token'>
 export type UserInfo = OmitUser & {
@@ -30,7 +29,6 @@ export type UserInfo = OmitUser & {
     finishedNumber: number
   }
 }
-
 // 3. 家庭档案-患者信息
 export type Patient = {
   id?: string

@@ -1,35 +1,69 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { getUserInfoApi } from '@/api/user'
+import { useUserStore } from '@/stores'
+import type { UserInfo } from '@/types/user'
+import { showConfirmDialog } from 'vant'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+// 如果有深层对象 还是需要 <van-row v-if="userInfo.orderInfo">
+const userInfo = ref({} as UserInfo)
+const getUserInfo = async () => {
+  const { data } = await getUserInfoApi()
+  userInfo.value = data
+}
+onMounted(() => {
+  getUserInfo()
+})
+// 工具栏
+const tools = [
+  { label: '我的问诊', path: '/user/consult' },
+  { label: '我的处方', path: '/' },
+  { label: '家庭档案', path: '/user/patient' },
+  { label: '地址管理', path: '/user/address' },
+  { label: '我的评价', path: '/' },
+  { label: '官方客服', path: '/' },
+  { label: '设置', path: '/' }
+]
+//  退出登录
+const store = useUserStore()
+const router = useRouter()
+const logout = async () => {
+  await showConfirmDialog({
+    title: '温馨提示',
+    message: '确定要退出登录吗？'
+  })
+  //点击了确认
+  store.delUser()
+  router.push('/login')
+}
+</script>
 
 <template>
   <div class="user-page">
     <!-- 1. 头部展示 -->
     <div class="user-page-head">
       <div class="top">
-        <van-image
-          round
-          fit="cover"
-          src="https://yanxuan-item.nosdn.127.net/ef302fbf967ea8f439209bd747738aba.png"
-        />
+        <van-image round fit="cover" :src="userInfo.avatar" />
         <div class="name">
-          <p>用户907456</p>
+          <p>{{ userInfo.account }}</p>
           <p><van-icon name="edit" /></p>
         </div>
       </div>
       <van-row>
         <van-col span="6">
-          <p>150</p>
+          <p>{{ userInfo.collectionNumber }}</p>
           <p>收藏</p>
         </van-col>
         <van-col span="6">
-          <p>23</p>
+          <p>{{ userInfo.likeNumber }}</p>
           <p>关注</p>
         </van-col>
         <van-col span="6">
-          <p>270</p>
+          <p>{{ userInfo.score }}</p>
           <p>积分</p>
         </van-col>
         <van-col span="6">
-          <p>3</p>
+          <p>{{ userInfo.couponNumber }}</p>
           <p>优惠券</p>
         </van-col>
       </van-row>
@@ -39,21 +73,29 @@
         <h3>药品订单</h3>
         <router-link to="/order">全部订单 <van-icon name="arrow" /></router-link>
       </div>
-      <van-row>
+      <van-row v-if="userInfo.orderInfo">
         <van-col span="6">
-          <cp-icon name="user-paid" />
+          <van-badge :content="userInfo.orderInfo.paidNumber || ''">
+            <cp-icon name="user-paid" />
+          </van-badge>
           <p>待付款</p>
         </van-col>
         <van-col span="6">
-          <cp-icon name="user-shipped" />
+          <van-badge :content="userInfo.orderInfo.shippedNumber || ''">
+            <cp-icon name="user-shipped" />
+          </van-badge>
           <p>待发货</p>
         </van-col>
         <van-col span="6">
-          <cp-icon name="user-received" />
+          <van-badge :content="userInfo.orderInfo.receivedNumber || ''">
+            <cp-icon name="user-received" />
+          </van-badge>
           <p>待收货</p>
         </van-col>
         <van-col span="6">
-          <cp-icon name="user-finished" />
+          <van-badge :content="userInfo.orderInfo.finishedNumber || ''">
+            <cp-icon name="user-finished" />
+          </van-badge>
           <p>已完成</p>
         </van-col>
       </van-row>
@@ -61,15 +103,19 @@
     <!-- 2. 快捷工具 -->
     <div class="user-page-group">
       <h3>快捷工具</h3>
-      <van-cell title="标题" is-link :border="false">
-        <template #icon><cp-icon name="user-tool-01" /></template>
-      </van-cell>
-      <van-cell title="标题" is-link :border="false">
-        <template #icon><cp-icon name="user-tool-01" /></template>
+      <van-cell
+        v-for="(tool, i) in tools"
+        :key="i"
+        :title="tool.label"
+        :to="tool.path"
+        is-link
+        :border="false"
+      >
+        <template #icon><cp-icon :name="`user-tool-0${i + 1}`" /></template>
       </van-cell>
     </div>
     <!-- 3. 退出登录 -->
-    <a class="logout" href="javascript:;">退出登录</a>
+    <a class="logout" href="javascript:;" @click="logout">退出登录</a>
   </div>
 </template>
 

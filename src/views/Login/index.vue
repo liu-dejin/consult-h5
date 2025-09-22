@@ -8,7 +8,7 @@ const clickRight = () => {
 // 是否同意网站的使用协议
 const agree = ref(false)
 // 表单数据
-const mobile = ref('')
+const mobile = ref('13230000001')
 const password = ref('')
 // 导入校验规则
 import { mobileRules, passwordRules } from '@/utils/rules'

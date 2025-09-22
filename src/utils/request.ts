@@ -20,14 +20,14 @@ const instance = axios.create({
  * @returns 修改后的请求配置对象
  */
 instance.interceptors.request.use(
-  config => {
+  (config) => {
     const store = useUserStore()
     if (store.user?.token) {
       config.headers.Authorization = `Bearer ${store.user.token}`
     }
     return config
   },
-  err => {
+  (err) => {
     return Promise.reject(err)
   }
 )
@@ -43,7 +43,7 @@ instance.interceptors.request.use(
  * @returns 处理后的响应数据或拒绝的Promise
  */
 instance.interceptors.response.use(
-  res => {
+  (res) => {
     // 当响应码不为10000时，显示失败提示并返回拒绝的Promise
     if (res.data?.code !== 10000) {
       showFailToast(res.data.message || '登录失败')
@@ -52,7 +52,7 @@ instance.interceptors.response.use(
     // 返回响应数据
     return res.data
   },
-  err => {
+  (err) => {
     // 当响应状态码为401时，清除用户信息并跳转到登录页
     if (err.response?.status === 401) {
       const store = useUserStore()

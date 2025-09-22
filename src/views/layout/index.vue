@@ -6,6 +6,7 @@
     <van-tabbar route>
       <van-tabbar-item to="/home">
         首页
+        <!-- #icon 结构active获取当前菜单是否选择  -->
         <template #icon="{ active }">
           <cp-icon :name="`home-index-${active ? 'active' : 'default'}`" />
         </template>
@@ -34,6 +35,7 @@
 
 <style lang="scss" scoped>
 .layout-page {
+  // 没有data-v就要深度监听
   :deep() {
     .van-tabbar-item {
       &__icon {
