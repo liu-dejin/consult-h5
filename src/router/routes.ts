@@ -9,6 +9,13 @@ const routes = [
     }
   },
   {
+    path: '/user/patient',
+    component: () => import('@/views/user/PatientInfo.vue'),
+    meta: {
+      title: '家庭档案'
+    }
+  },
+  {
     path: '/',
     component: () => import('@/views/layout/index.vue'),
     children: [

@@ -18,7 +18,7 @@ const onClickLeft = () => {
 //1.接受父传子的变量
 defineProps<{
   title: string
-  rightText: string
+  rightText?: string
 }>()
 //2.子传父
 const emit = defineEmits<{

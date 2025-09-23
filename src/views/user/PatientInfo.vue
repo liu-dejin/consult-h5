@@ -1,4 +1,25 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { getPatientListApi } from '@/api/user'
+import type { PatientList } from '@/types/user'
+import { ref } from 'vue'
+import { onMounted } from 'vue'
+
+// 组件挂载完毕获取数据
+const list = ref<PatientList>([])
+const getPatientList = async () => {
+  // 获取患者列表
+  const res = await getPatientListApi()
+  list.value = res.data
+}
+onMounted(() => {
+  getPatientList()
+})
+const options = [
+  { label: '男', value: 1 },
+  { label: '女', value: 0 }
+]
+const gender = ref(1)
+</script>
 
 <template>
   <div class="patient-page">
@@ -9,35 +30,23 @@
       <p>以便医生给出更准确的治疗，信息仅医生可见</p>
     </div>
     <div class="patient-list">
-      <div class="patient-item">
+      <div class="patient-item" v-for="item in list" :key="item.id">
         <div class="info">
-          <span class="name">李富贵</span>
-          <span class="id">321***********6164</span>
-          <span>男</span>
-          <span>32岁</span>
+          <span class="name">{{ item.name }}</span>
+          <span class="id">{{ item.idCard.replace(/^(.{6}).+(.{4})$/, '$1******$2') }}</span>
+          <span>{{ item.genderValue }}</span>
+          <span>{{ item.age }}岁</span>
         </div>
         <div class="icon"><cp-icon name="user-edit" /></div>
-        <div class="tag">默认</div>
+        <div class="tag" v-if="item.defaultFlag === 1">默认</div>
       </div>
-      <div class="patient-item">
-        <div class="info">
-          <span class="name">李富贵</span>
-          <span class="id">321***********6164</span>
-          <span>男</span>
-          <span>32岁</span>
-        </div>
-        <div class="icon"><cp-icon name="user-edit" /></div>
-      </div>
-      <div class="patient-add">
+      <div class="patient-add" v-if="list.length < 6">
         <cp-icon name="user-add" />
         <p>添加患者</p>
       </div>
       <div class="patient-tip">最多可添加 6 人</div>
     </div>
-    <!-- 患者选择下一步 -->
-    <div class="patient-next" v-if="false">
-      <van-button type="primary" round block>下一步</van-button>
-    </div>
+    <cp-radio-btn :options="options" v-model="gender"></cp-radio-btn>
   </div>
 </template>
 
