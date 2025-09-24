@@ -1,10 +1,25 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+
+//1.接受父传子的变量
+const props = defineProps<{
+  title?: string
+  rightText?: string
+  back?: () => void
+}>()
+//2.子传父
+const emit = defineEmits<{
+  //   (e: 'click-right'): void
+  clickRight: [e: void]
+}>()
+
 // 需求:支持传入title right-text 支持click-right事件
 
 // 等价于this.$router
 const router = useRouter()
 const onClickLeft = () => {
+  if (props.back) return props.back()
+
   //回退页面    replace无法回退
   if (history.state.back) {
     // 存在回退地址就返回
@@ -14,17 +29,6 @@ const onClickLeft = () => {
     router.push('/')
   }
 }
-
-//1.接受父传子的变量
-defineProps<{
-  title: string
-  rightText?: string
-}>()
-//2.子传父
-const emit = defineEmits<{
-  //   (e: 'click-right'): void
-  clickRight: [e: void]
-}>()
 </script>
 
 <template>

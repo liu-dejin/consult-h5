@@ -1,4 +1,4 @@
-import type { CodeType, PatientList, User, UserInfo } from '@/types/user'
+import type { CodeType, Patient, PatientList, User, UserInfo } from '@/types/user'
 import { request } from '@/utils/request'
 
 // 密码登录
@@ -17,3 +17,6 @@ export const getUserInfoApi = () => request<UserInfo>('/patient/myUser')
 
 // 获取患者列表
 export const getPatientListApi = () => request<PatientList>('/patient/mylist')
+
+//添加患者信息
+export const addPatientApi = (patient: Patient) => request('/patient/add', 'POST', patient)

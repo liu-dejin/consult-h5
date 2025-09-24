@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { getPatientListApi } from '@/api/user'
-import type { PatientList } from '@/types/user'
-import { ref } from 'vue'
+import { addPatientApi, getPatientListApi } from '@/api/user'
+import type { Patient, PatientList } from '@/types/user'
+import { computed, ref } from 'vue'
 import { onMounted } from 'vue'
-
+import { nameRules, idCardRules } from '@/utils/rules'
+import { showConfirmDialog, showSuccessToast, type FormInstance } from 'vant'
 // 组件挂载完毕获取数据
 const list = ref<PatientList>([])
 const getPatientList = async () => {
@@ -19,6 +20,48 @@ const options = [
   { label: '女', value: 0 }
 ]
 const gender = ref(1)
+
+const show = ref(false)
+
+const showPopup = () => {
+  patient.value = { ...initPatient }
+  show.value = true
+}
+const initPatient: Patient = {
+  name: '',
+  idCard: '',
+  gender: 1,
+  defaultFlag: 0
+}
+const patient = ref<Patient>({
+  ...initPatient
+})
+//支持复选框
+const defaultFlag = computed({
+  get: () => (patient.value.defaultFlag === 1 ? 'true' : 'false'),
+  set: (value) => (patient.value.defaultFlag = value ? 1 : 0)
+})
+
+// 提交
+const form = ref<FormInstance>()
+const onSubmit = async () => {
+  //表单整体校验
+  await form.value?.validate()
+  //身份证倒数第二位和性别对比 奇数男 偶数女
+  const gender = +patient.value.idCard.slice(-2, -1) % 2
+  if (gender !== patient.value.gender) {
+    await showConfirmDialog({
+      title: '提示',
+      message: '身份证与性别不匹配，请重新填写',
+      confirmButtonText: '确定'
+    })
+  }
+  // 提交
+  await addPatientApi(patient.value)
+  show.value = false
+  getPatientList()
+  showSuccessToast('添加成功')
+}
 </script>
 
 <template>
@@ -40,20 +83,68 @@ const gender = ref(1)
         <div class="icon"><cp-icon name="user-edit" /></div>
         <div class="tag" v-if="item.defaultFlag === 1">默认</div>
       </div>
-      <div class="patient-add" v-if="list.length < 6">
+      <div class="patient-add" v-if="list.length < 6" @click="showPopup">
         <cp-icon name="user-add" />
         <p>添加患者</p>
       </div>
       <div class="patient-tip">最多可添加 6 人</div>
     </div>
     <cp-radio-btn :options="options" v-model="gender"></cp-radio-btn>
+    <!-- popup组件 -->
+    <van-popup position="right" v-model:show="show">
+      <cp-nav-bar
+        title="添加患者"
+        rightText="保存"
+        :back="
+          () => {
+            show = false
+          }
+        "
+        @click-right="onSubmit"
+      >
+      </cp-nav-bar>
+      <van-form autocomplete="off" ref="form">
+        <van-field
+          v-model="patient.name"
+          label="真实姓名"
+          placeholder="请输入真实姓名"
+          :rules="nameRules"
+        />
+        <van-field
+          v-model="patient.idCard"
+          label="身份证号"
+          placeholder="请输入身份证号"
+          :rules="idCardRules"
+        />
+        <van-field label="性别" class="pb4">
+          <!-- 单选按钮组件 -->
+          <template #input>
+            <cp-radio-btn v-model="patient.gender" :options="options"></cp-radio-btn>
+          </template>
+        </van-field>
+        <van-field label="默认就诊人">
+          <template #input>
+            <van-checkbox v-model="defaultFlag" :icon-size="18" round />
+          </template>
+        </van-field>
+      </van-form>
+    </van-popup>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .patient-page {
   padding: 46px 0 80px;
+  :deep() {
+    .van-popup {
+      width: 100%;
+      height: 100%;
+      padding-top: 46px;
+      box-sizing: border-box;
+    }
+  }
 }
+
 .patient-change {
   padding: 15px;
   > h3 {
