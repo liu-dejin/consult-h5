@@ -20,3 +20,6 @@ export const getPatientListApi = () => request<PatientList>('/patient/mylist')
 
 //添加患者信息
 export const addPatientApi = (patient: Patient) => request('/patient/add', 'POST', patient)
+
+//编辑患者信息
+export const editPatientApi = (patient: Patient) => request('/patient/update', 'PUT', patient)

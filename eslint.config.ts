@@ -39,9 +39,10 @@ export default defineConfigWithVueTs(
           ignores: ['index'] // index.vue 可单词
         }
       ],
-      '@typescript-eslint/no-explicit-any': 'off', // 允许使用 any 类型
-      'no-console': ['warn', { allow: ['warn', 'error'] }] // 警告使用 console，但允许 warn 和 error
-      // 'no-debugger': 'warn' // 警告使用 debugger
+      '@typescript-eslint/no-unused-expressions': [
+        'error',
+        { allowShortCircuit: true, allowTernary: true }
+      ]
     }
   }
 )

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { addPatientApi, getPatientListApi } from '@/api/user'
+import { addPatientApi, editPatientApi, getPatientListApi } from '@/api/user'
 import type { Patient, PatientList } from '@/types/user'
 import { computed, ref } from 'vue'
 import { onMounted } from 'vue'
 import { nameRules, idCardRules } from '@/utils/rules'
 import { showConfirmDialog, showSuccessToast, type FormInstance } from 'vant'
+
 // 组件挂载完毕获取数据
 const list = ref<PatientList>([])
 const getPatientList = async () => {
@@ -23,8 +24,15 @@ const gender = ref(1)
 
 const show = ref(false)
 
-const showPopup = () => {
-  patient.value = { ...initPatient }
+const showPopup = (item?: Patient) => {
+  if (item) {
+    const { id, name, idCard, gender, defaultFlag } = item
+    // 表单回显
+    patient.value = { id, name, idCard, gender, defaultFlag }
+  } else {
+    patient.value = { ...initPatient }
+    form.value?.resetValidation()
+  }
   show.value = true
 }
 const initPatient: Patient = {
@@ -56,11 +64,11 @@ const onSubmit = async () => {
       confirmButtonText: '确定'
     })
   }
-  // 提交
-  await addPatientApi(patient.value)
+  // 提交 编辑/添加
+  patient.value.id ? await editPatientApi(patient.value) : await addPatientApi(patient.value)
   show.value = false
   getPatientList()
-  showSuccessToast('添加成功')
+  showSuccessToast(patient.value.id ? '编辑成功' : '添加成功')
 }
 </script>
 
@@ -80,10 +88,10 @@ const onSubmit = async () => {
           <span>{{ item.genderValue }}</span>
           <span>{{ item.age }}岁</span>
         </div>
-        <div class="icon"><cp-icon name="user-edit" /></div>
+        <div class="icon" @click="showPopup(item)"><cp-icon name="user-edit" /></div>
         <div class="tag" v-if="item.defaultFlag === 1">默认</div>
       </div>
-      <div class="patient-add" v-if="list.length < 6" @click="showPopup">
+      <div class="patient-add" v-if="list.length < 6" @click="showPopup()">
         <cp-icon name="user-add" />
         <p>添加患者</p>
       </div>
@@ -93,7 +101,7 @@ const onSubmit = async () => {
     <!-- popup组件 -->
     <van-popup position="right" v-model:show="show">
       <cp-nav-bar
-        title="添加患者"
+        :title="patient.id ? '编辑患者' : '添加患者'"
         rightText="保存"
         :back="
           () => {
