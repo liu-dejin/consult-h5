@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { addPatientApi, editPatientApi, getPatientListApi } from '@/api/user'
+import { addPatientApi, delPatientApi, editPatientApi, getPatientListApi } from '@/api/user'
 import type { Patient, PatientList } from '@/types/user'
 import { computed, ref } from 'vue'
 import { onMounted } from 'vue'
@@ -70,6 +70,21 @@ const onSubmit = async () => {
   getPatientList()
   showSuccessToast(patient.value.id ? '编辑成功' : '添加成功')
 }
+const remove = async () => {
+  // 确认框 删除请求 关闭 加载 提示
+  if (patient.value.id) {
+    await showConfirmDialog({
+      title: '温馨提示',
+      message: `确定要删除${patient.value.name}患者吗？`,
+      confirmButtonText: '确定',
+      cancelButtonText: '取消'
+    })
+    await delPatientApi(patient.value.id)
+    show.value = false
+    getPatientList()
+    showSuccessToast('删除成功')
+  }
+}
 </script>
 
 <template>
@@ -136,6 +151,10 @@ const onSubmit = async () => {
           </template>
         </van-field>
       </van-form>
+      <!-- 删除 -->
+      <van-action-bar v-if="patient.id">
+        <van-action-bar-button text="删除" @click="remove" />
+      </van-action-bar>
     </van-popup>
   </div>
 </template>
@@ -247,5 +266,14 @@ const onSubmit = async () => {
 .patient-tip {
   color: var(--cp-tag);
   padding: 12px 0;
+}
+// 底部操作栏
+.van-action-bar {
+  padding: 0 10px;
+  margin-bottom: 10px;
+  .van-button {
+    color: var(--cp-price);
+    background-color: var(--cp-bg);
+  }
 }
 </style>

@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const active = ref(1)
+</script>
 <template>
   <div class="home-page">
     <!-- 1. 头部 -->
@@ -71,10 +76,16 @@
       </van-swipe>
     </div>
     <!-- 4. 知识列表：关注、推荐、减脂、饮食 -->
+    <van-tabs sticky shrink v-model:active="active">
+      <van-tab title="关注"></van-tab>
+      <van-tab title="推荐">
+        <p v-for="i in 100" :key="i">内容</p>
+      </van-tab>
+      <van-tab title="减脂"></van-tab>
+      <van-tab title="饮食"></van-tab>
+    </van-tabs>
   </div>
 </template>
-
-<script setup lang="ts"></script>
 
 <style lang="scss" scoped>
 .home-page {
