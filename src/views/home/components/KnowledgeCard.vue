@@ -52,7 +52,7 @@
       margin-right: 10px;
     }
     .info {
-      width: 226px;
+      width: 200px;
       padding-right: 10px;
       .name {
         color: var(--cp-text2);
