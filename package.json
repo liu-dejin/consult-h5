@@ -18,6 +18,7 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
+    "@vueuse/core": "^13.9.0",
     "axios": "^1.12.1",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",

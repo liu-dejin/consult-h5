@@ -1,5 +1,35 @@
 <script setup lang="ts">
+// import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import DoctorCard from './DoctorCard.vue'
+import { useWindowSize } from '@vueuse/core'
+import type { DoctorList } from '@/types/consult'
+import { getDoctorPageApi } from '@/api/consult'
+const { width } = useWindowSize()
+
+// 原生方式 组件初始化/变化拿到设备宽度
+// const width = ref(0)
+// const setWidth = () => (width.value = window.innerWidth)
+// onMounted(() => {
+//   setWidth()
+//   window.addEventListener('resize', setWidth)
+// })
+// onUnmounted(() => {
+//   window.removeEventListener('resize', setWidth)
+// })
+
+const list = ref<DoctorList>([])
+const loadData = async () => {
+  const res = await getDoctorPageApi({
+    current: 1,
+    pageSize: 5
+  })
+
+  list.value = res.data.rows
+}
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <template>
@@ -10,9 +40,9 @@ import DoctorCard from './DoctorCard.vue'
     </div>
     <div class="body">
       <!-- swipe 组件 -->
-      <van-swipe :width="150" :showIndicators="false" :loop="false">
-        <van-swipe-item v-for="i in 5" :key="i">
-          <doctor-card></doctor-card>
+      <van-swipe :width="(150 / 375) * width" :showIndicators="false" :loop="false">
+        <van-swipe-item v-for="item in list" :key="item.id">
+          <doctor-card :item="item"></doctor-card>
         </van-swipe-item>
       </van-swipe>
     </div>
