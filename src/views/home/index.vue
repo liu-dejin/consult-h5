@@ -79,11 +79,11 @@ const active = ref(1)
     <!-- 4. 知识列表：关注、推荐、减脂、饮食 -->
     <van-tabs sticky shrink v-model:active="active">
       <van-tab title="关注">
-        <knowledge-list></knowledge-list>
+        <knowledge-list type="like"></knowledge-list>
       </van-tab>
-      <van-tab title="推荐"><knowledge-list></knowledge-list> </van-tab>
-      <van-tab title="减脂"><knowledge-list></knowledge-list></van-tab>
-      <van-tab title="饮食"><knowledge-list></knowledge-list></van-tab>
+      <van-tab title="推荐"><knowledge-list type="recommend"></knowledge-list> </van-tab>
+      <van-tab title="减脂"><knowledge-list type="fatReduction"></knowledge-list></van-tab>
+      <van-tab title="饮食"><knowledge-list type="food"></knowledge-list></van-tab>
     </van-tabs>
   </div>
 </template>

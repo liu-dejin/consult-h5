@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import KnowledgeCard from './KnowledgeCard.vue'
+import type { KnowledgeType } from '@/types/consult'
 // 是否触底
 const loading = ref(false)
 // 是否完全加载数据
@@ -19,6 +20,10 @@ const onLoad = () => {
     loading.value = false
   }, 2000)
 }
+
+defineProps<{
+  type: KnowledgeType
+}>()
 </script>
 
 <template>
