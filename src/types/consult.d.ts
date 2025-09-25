@@ -128,3 +128,17 @@ export type Consult = {
 export type PartialConsult = Partial<Consult>
 // Required<T> ：表示将类型T的所有属性变为必选
 // type RequiredConsult = Required<PartialConsult>
+
+// 二级科室
+type subDep = {
+  /** 科室ID */
+  id: string
+  /** 科室名称 */
+  name: string
+}
+
+// 一级科室
+export type TopDep = subDep & {
+  /** 二级科室 */
+  child: subDep[]
+}

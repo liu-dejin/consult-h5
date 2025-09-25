@@ -17,7 +17,17 @@ const routes = [
   },
   {
     path: '/consult/fast',
-    component: () => import('@/views/consult/ConsultFast.vue')
+    component: () => import('@/views/consult/ConsultFast.vue'),
+    meta: {
+      title: '极速问诊'
+    }
+  },
+  {
+    path: '/consult/dep',
+    component: () => import('@/views/consult/ConsultDep.vue'),
+    meta: {
+      title: '选择科室'
+    }
   },
   {
     path: '/',
