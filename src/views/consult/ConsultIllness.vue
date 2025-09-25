@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { uploadImageApi } from '@/api/consult'
 import { illnessTime } from '@/enums'
 import type { ConsultIllness } from '@/types/consult'
+import type { UploaderAfterRead, UploaderFileListItem } from 'vant'
 import { ref } from 'vue'
 
 const timeOptions = [
@@ -23,11 +25,26 @@ const form = ref<ConsultIllness>({
 
 // 上传图片
 const fileList = ref([])
-const onAfterRead = () => {
-  console.log('上传图片')
+const onAfterRead: UploaderAfterRead = (item) => {
+  if (Array.isArray(item)) return
+  if (!item.file) return
+  item.status = 'uploading'
+  item.message = '上传中...'
+  uploadImageApi(item.file)
+    .then((res) => {
+      item.status = 'done'
+      item.message = undefined
+      item.url = res.data.url
+      //同步数据
+      form.value.pictures?.push(res.data)
+    })
+    .catch(() => {
+      item.status = 'failed'
+      item.message = '上传失败'
+    })
 }
-const onDelete = (index: number) => {
-  console.log('删除图片', index)
+const onDelete = (item: UploaderFileListItem) => {
+  form.value.pictures = form.value.pictures?.filter((pic) => pic.url !== item.url)
 }
 </script>
 
