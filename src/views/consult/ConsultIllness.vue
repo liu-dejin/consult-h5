@@ -2,9 +2,14 @@
 import { uploadImageApi } from '@/api/consult'
 import { illnessTime } from '@/enums'
 import { useConsultStore } from '@/stores'
-import type { ConsultIllness } from '@/types/consult'
-import { showToast, type UploaderAfterRead, type UploaderFileListItem } from 'vant'
-import { computed, ref } from 'vue'
+import type { ConsultIllness, Image } from '@/types/consult'
+import {
+  showConfirmDialog,
+  showToast,
+  type UploaderAfterRead,
+  type UploaderFileListItem
+} from 'vant'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const timeOptions = [
@@ -26,7 +31,7 @@ const form = ref<ConsultIllness>({
 })
 
 // 上传图片
-const fileList = ref([])
+const fileList = ref<Image[]>([])
 const onAfterRead: UploaderAfterRead = (item) => {
   if (Array.isArray(item)) return
   if (!item.file) return
@@ -67,6 +72,24 @@ const next = () => {
   // 跳转携带标识
   router.push('/user/patient?isChange=1')
 }
+onMounted(() => {
+  if (store.consult.illnessDesc) {
+    showConfirmDialog({
+      title: '您有未保存的病情描述，是否跳转填写？',
+      message: '是否恢复之前填写的病情信息',
+      // 不会自动关闭确认框
+      closeOnPopstate: false
+    }).then(() => {
+      const { illnessDesc, illnessTime, consultFlag, pictures } = store.consult
+      form.value = {
+        illnessDesc,
+        illnessTime,
+        consultFlag
+      }
+      fileList.value = pictures || []
+    })
+  }
+})
 </script>
 
 <template>
