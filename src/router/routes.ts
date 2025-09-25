@@ -30,6 +30,12 @@ const routes = [
     }
   },
   {
+    path: '/consult/illness',
+    component: () => import('@/views/consult/ConsultIllness.vue'),
+    meta: { title: '病情描述' }
+  },
+
+  {
     path: '/',
     component: () => import('@/views/layout/index.vue'),
     children: [

@@ -1,22 +1,31 @@
 <script setup lang="ts">
-// 患病时间选项
+import { illnessTime } from '@/enums'
+import type { ConsultIllness } from '@/types/consult'
+import { ref } from 'vue'
+
 const timeOptions = [
-  { label: '一周内', value: 1 },
-  { label: '一月内', value: 2 },
-  { label: '半年内', value: 3 },
-  { label: '大于半年', value: 4 }
+  { label: '一周内', value: illnessTime.Week },
+  { label: '一月内', value: illnessTime.Month },
+  { label: '半年内', value: illnessTime.HalfYear },
+  { label: '半年以上', value: illnessTime.More }
 ]
-// 是否就诊选项
 const flagOptions = [
-  { label: '就诊过', value: 0 },
-  { label: '没就诊过', value: 1 }
+  { label: '就诊过', value: 1 },
+  { label: '未就诊过', value: 0 }
 ]
+//病情描述对象
+const form = ref<ConsultIllness>({
+  illnessDesc: '',
+  illnessTime: undefined,
+  consultFlag: undefined,
+  pictures: []
+})
 </script>
 
 <template>
   <div class="consult-illness-page">
     <cp-nav-bar title="图文问诊" />
-    <!-- 1. 医生提示 -->
+    <!-- 医生提示 -->
     <div class="illness-tip van-hairline--bottom">
       <img class="img" src="@/assets/avatar-doctor.svg" />
       <div class="info">
@@ -25,26 +34,21 @@ const flagOptions = [
         <p class="safe"><cp-icon name="consult-safe" /><span>内容仅医生可见</span></p>
       </div>
     </div>
-    <!-- 2. 病情描述-表单 -->
+    <!-- 收集信息 -->
     <div class="illness-form">
-      <!-- 病情描述-基本情况 -->
       <van-field
         type="textarea"
         rows="3"
         placeholder="请详细描述您的病情，病情描述不能为空"
+        v-model="form.illnessDesc"
       ></van-field>
       <div class="item">
         <p>本次患病多久了？</p>
-        <cp-radio-btn :options="timeOptions" />
+        <cp-radio-btn v-model="form.illnessTime" :options="timeOptions" />
       </div>
       <div class="item">
         <p>此次病情是否去医院就诊过？</p>
-        <cp-radio-btn :options="flagOptions" />
-      </div>
-      <!-- 病情描述-图片上传 -->
-      <div class="illness-img">
-        <van-uploader></van-uploader>
-        <p class="tip">上传内容仅医生可见,最多9张图,最大5MB</p>
+        <cp-radio-btn v-model="form.consultFlag" :options="flagOptions" />
       </div>
     </div>
   </div>
@@ -103,53 +107,6 @@ const flagOptions = [
       color: var(--cp-text3);
       padding: 15px 0;
     }
-  }
-}
-.illness-img {
-  padding-top: 16px;
-  margin-bottom: 40px;
-  display: flex;
-  align-items: center;
-  .tip {
-    font-size: 12px;
-    color: var(--cp-tip);
-  }
-  ::v-deep() {
-    .van-uploader {
-      &__preview {
-        &-delete {
-          left: -6px;
-          top: -6px;
-          border-radius: 50%;
-          background-color: var(--cp-primary);
-          width: 20px;
-          height: 20px;
-          &-icon {
-            transform: scale(0.9) translate(-22%, 22%);
-          }
-        }
-        &-image {
-          border-radius: 8px;
-          overflow: hidden;
-        }
-      }
-      &__upload {
-        border-radius: 8px;
-      }
-      &__upload-icon {
-        color: var(--cp-text3);
-      }
-    }
-  }
-}
-.van-button {
-  font-size: 16px;
-  margin-bottom: 30px;
-  &.disabled {
-    opacity: 1;
-    background: #fafafa;
-    color: #d9dbde;
-    border: #fafafa;
   }
 }
 </style>
