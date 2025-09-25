@@ -7,8 +7,11 @@ export const useConsultStore = defineStore(
   () => {
     //问诊信息
     const consult = ref<PartialConsult>({})
+    // 记录问诊类型
     const setType = (type: ConsultType) => (consult.value.type = type)
-    return { consult, setType }
+    // 记录问诊级别
+    const setillnessType = (type: 0 | 1) => (consult.value.illnessType = type)
+    return { consult, setType, setillnessType }
   },
   { persist: true }
 )

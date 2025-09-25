@@ -16,6 +16,10 @@ const routes = [
     }
   },
   {
+    path: '/consult/fast',
+    component: () => import('@/views/consult/ConsultFast.vue')
+  },
+  {
     path: '/',
     component: () => import('@/views/layout/index.vue'),
     children: [
