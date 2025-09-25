@@ -10,3 +10,4 @@ export default pinia
 
 // 导出全部模块
 export * from './modules/user'
+export * from './modules/consult'
