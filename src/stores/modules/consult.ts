@@ -22,7 +22,11 @@ export const useConsultStore = defineStore(
     }
     // 记录患者
     const setPatient = (id: string) => (consult.value.patientId = id)
-    return { consult, setType, setillnessType, setDep, setillness, setPatient }
+    // 记录优惠券
+    const setCoupon = (id: string) => (consult.value.couponId = id)
+    // 清除患者信息
+    const clear = () => (consult.value = {})
+    return { consult, setType, setillnessType, setDep, setillness, setPatient, setCoupon, clear }
   },
   { persist: true }
 )

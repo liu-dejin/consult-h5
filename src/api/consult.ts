@@ -7,6 +7,7 @@ import type {
   KnowledgePage,
   KnowledgeParams,
   PageParams,
+  PartialConsult,
   TopDep
 } from '@/types/consult'
 import { request } from '@/utils/request'
@@ -31,3 +32,7 @@ export const uploadImageApi = (file: File) => {
 
 export const getConsultOrderPerApi = (params: ConsultOrderPreParams) =>
   request<ConsultOrderPreData>('/patient/consult/order/pre', 'GET', params)
+
+// 生成订单
+export const createConsultOrderApi = (data: PartialConsult) =>
+  request<{ id: string }>('/patient/consult/order', 'POST', data)
