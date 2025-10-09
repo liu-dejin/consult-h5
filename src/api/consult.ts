@@ -1,4 +1,6 @@
 import type {
+  ConsultOrderPreData,
+  ConsultOrderPreParams,
   DoctorPage,
   FollowType,
   Image,
@@ -26,3 +28,6 @@ export const uploadImageApi = (file: File) => {
   fd.append('file', file)
   return request<Image>('/upload', 'POST', fd)
 }
+
+export const getConsultOrderPerApi = (params: ConsultOrderPreParams) =>
+  request<ConsultOrderPreData>('/patient/consult/order/pre', 'GET', params)

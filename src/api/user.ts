@@ -26,3 +26,5 @@ export const editPatientApi = (patient: Patient) => request('/patient/update', '
 
 //删除患者信息
 export const delPatientApi = (id: string) => request(`/patient/del/${id}`, 'DELETE')
+//患者详情
+export const getPatientDetailApi = (id: string) => request<Patient>(`/patient/info/${id}`)
