@@ -8,7 +8,7 @@ import { baseURL } from '@/utils/request'
 import { useUserStore } from '@/stores'
 import { useRoute } from 'vue-router'
 import type { Message, TimeMessages } from '@/types/room'
-import { MsgType } from '@/enums'
+import { MsgType, OrderType } from '@/enums'
 import type { ConsultOrderItem } from '@/types/consult'
 import { getConsultOrderDetailApi } from '@/api/consult'
 
@@ -64,11 +64,11 @@ onUnmounted(() => {
   <div class="room-page">
     <cp-nav-bar title="医生问诊室" />
     <!-- 1. 问诊状态-->
-    <room-status />
+    <room-status :status="consult?.status" :countdown="consult?.countdown" />
     <!-- 2. 问诊聊天列表消息 -->
     <room-message v-for="item in list" :key="item.id" :item="item" />
     <!-- 3. 底部操作栏：发消息 -->
-    <room-action />
+    <room-action :disabled="consult?.status !== OrderType.ConsultChat" />
   </div>
 </template>
 <style lang="scss" scoped>
