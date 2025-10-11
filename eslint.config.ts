@@ -1,7 +1,7 @@
+import { globalIgnores } from 'eslint/config'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import pluginVue from 'eslint-plugin-vue'
 import prettier from '@vue/eslint-config-prettier'
-import { globalIgnores } from 'eslint/config'
 
 /**
  * ESLint 配置文件，用于配置 Vue 和 TypeScript 项目的代码检查规则
