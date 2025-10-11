@@ -56,7 +56,7 @@ onUnmounted(() => {
     <!-- 1. 问诊状态-->
     <room-status />
     <!-- 2. 问诊聊天列表消息 -->
-    <room-message />
+    <room-message v-for="item in list" :key="item.id" :item="item" />
     <!-- 3. 底部操作栏：发消息 -->
     <room-action />
   </div>

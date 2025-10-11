@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { uploadImageApi } from '@/api/consult'
-import { illnessTime } from '@/enums'
 import { useConsultStore } from '@/stores'
 import type { ConsultIllness, Image } from '@/types/consult'
 import {
@@ -11,17 +10,7 @@ import {
 } from 'vant'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-
-const timeOptions = [
-  { label: '一周内', value: illnessTime.Week },
-  { label: '一月内', value: illnessTime.Month },
-  { label: '半年内', value: illnessTime.HalfYear },
-  { label: '半年以上', value: illnessTime.More }
-]
-const flagOptions = [
-  { label: '就诊过', value: 1 },
-  { label: '未就诊过', value: 0 }
-]
+import { timeOptions, flagOptions } from '@/api/constants'
 //病情描述对象
 const form = ref<ConsultIllness>({
   illnessDesc: '',
