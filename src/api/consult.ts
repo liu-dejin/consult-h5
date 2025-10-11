@@ -1,4 +1,5 @@
 import type {
+  ConsultOrderItem,
   ConsultOrderPreData,
   ConsultOrderPreParams,
   DoctorPage,
@@ -43,3 +44,6 @@ export const getConsultOrderPayUrlApi = (params: {
   orderId: string
   payCallback: string
 }) => request<{ payUrl: string }>('/patient/consult/pay', 'POST', params)
+
+export const getConsultOrderDetailApi = (orderId: string) =>
+  request<ConsultOrderItem>('/patient/consult/order/detail', 'GET', { orderId })

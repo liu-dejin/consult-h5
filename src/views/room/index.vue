@@ -9,12 +9,20 @@ import { useUserStore } from '@/stores'
 import { useRoute } from 'vue-router'
 import type { Message, TimeMessages } from '@/types/room'
 import { MsgType } from '@/enums'
+import type { ConsultOrderItem } from '@/types/consult'
+import { getConsultOrderDetailApi } from '@/api/consult'
 
 const store = useUserStore()
 const route = useRoute()
 const list = ref<Message[]>([])
+const consult = ref<ConsultOrderItem>()
+const loadConsult = async () => {
+  const res = await getConsultOrderDetailApi(route.query.orderId as string)
+  consult.value = res.data
+}
 let socket: Socket
 onMounted(() => {
+  loadConsult()
   socket = io(baseURL, {
     auth: { token: `Bearer ${store.user.token}` },
     query: { orderId: route.query.orderId }
@@ -44,6 +52,8 @@ onMounted(() => {
     })
     list.value.unshift(...arr)
   })
+  // 监听订单变化的状态
+  socket.on('statusChange', () => loadConsult())
 })
 onUnmounted(() => {
   socket.close()
