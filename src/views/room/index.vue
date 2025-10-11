@@ -2,6 +2,52 @@
 import RoomStatus from './components/RoomStatus.vue'
 import RoomAction from './components/RoomAction.vue'
 import RoomMessage from './components/RoomMessage.vue'
+import { io, Socket } from 'socket.io-client'
+import { onMounted, onUnmounted, ref } from 'vue'
+import { baseURL } from '@/utils/request'
+import { useUserStore } from '@/stores'
+import { useRoute } from 'vue-router'
+import type { Message, TimeMessages } from '@/types/room'
+import { MsgType } from '@/enums'
+
+const store = useUserStore()
+const route = useRoute()
+const list = ref<Message[]>([])
+let socket: Socket
+onMounted(() => {
+  socket = io(baseURL, {
+    auth: { token: `Bearer ${store.user.token}` },
+    query: { orderId: route.query.orderId }
+  })
+  socket.on('connect', () => {
+    console.log('连接成功')
+  })
+  socket.on('disconnect', () => {
+    console.log('断开连接')
+  })
+  socket.on('error', (err) => {
+    console.log('错误', err)
+  })
+  socket.on('chatMsgList', ({ data }: { data: TimeMessages[] }) => {
+    // data [{createTime},...items]
+    const arr: Message[] = []
+    data.forEach((item) => {
+      arr.push({
+        msgType: MsgType.Notify,
+        msg: {
+          content: item.createTime
+        },
+        createTime: item.createTime,
+        id: item.createTime
+      })
+      arr.push(...item.items)
+    })
+    list.value.unshift(...arr)
+  })
+})
+onUnmounted(() => {
+  socket.close()
+})
 </script>
 
 <template>
