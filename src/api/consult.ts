@@ -36,3 +36,10 @@ export const getConsultOrderPerApi = (params: ConsultOrderPreParams) =>
 // 生成订单
 export const createConsultOrderApi = (data: PartialConsult) =>
   request<{ id: string }>('/patient/consult/order', 'POST', data)
+
+//支付url
+export const getConsultOrderPayUrlApi = (params: {
+  paymentMethod: 0 | 1
+  orderId: string
+  payCallback: string
+}) => request<{ payUrl: string }>('/patient/consult/pay', 'POST', params)

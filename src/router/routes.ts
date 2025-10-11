@@ -1,3 +1,5 @@
+import type { RouteLocationNormalized } from 'vue-router'
+
 const routes = [
   {
     path: '/login',
@@ -39,7 +41,14 @@ const routes = [
     component: () => import('@/views/consult/ConsultPay.vue'),
     meta: { title: '支付问诊' }
   },
-
+  {
+    path: '/room',
+    component: () => import('@/views/room/index.vue'),
+    meta: { title: '问诊室' },
+    beforeEnter(to: RouteLocationNormalized) {
+      if (to.query.payResult === 'false') return '/user/consult'
+    }
+  },
   {
     path: '/',
     component: () => import('@/views/layout/index.vue'),
